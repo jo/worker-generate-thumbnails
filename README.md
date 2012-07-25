@@ -34,8 +34,10 @@ The status object of the worker looks like this:
 
     "worker_status": {
       "generate-thumbnails": {
-        "status": "completed",
-        "revpos": 160
+        "myfile": {
+          "status": "completed",
+          "revpos": 160
+        }
       }
     }
 
@@ -43,6 +45,7 @@ The status field can be _triggered_, _completed_ or _error_.
 
 The worker status is scoped by the worker name in order to have many workers
 processing the same document.
+The worker status is also per attachment to process only attachments which had changed.
 
 
 ## Running the Worker
@@ -50,6 +53,7 @@ processing the same document.
 Make shure you did
 
     git submodule init
+    git submodule update
 
 
 To start, this needs either the following environment variables set:

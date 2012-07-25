@@ -27,7 +27,6 @@ var processor = (function() {
           content_type: 'image/jpeg',
           data: data.toString('base64')
         };
-        next();
       }, this));
 
       convert.on('exit', _.bind(function(code) {
@@ -38,6 +37,8 @@ var processor = (function() {
         }
 
         this._log(doc, 'done ' + name);
+
+        next(code);
       }, this));
 
       // request image and send it to imagemagick
