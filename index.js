@@ -15,30 +15,43 @@ var processor = (function() {
     },
     process: function(doc, name, next) {
       var args = ['-', '-thumbnail', this.config.size, '-'],
-          convert = spawn('convert', args);
+          convert = spawn('convert', args),
+          image = [],
+          imageLength = 0;
 
       this._log(doc, 'convert ' + name);
 
       // print errors
       convert.stderr.pipe(process.stderr);
 
-      convert.stdout.on('data', _.bind(function(data) {
+      convert.stdout.on('data', function(data) {
+        image.push(data);
+        imageLength += data.length;
+      });
+
+      convert.stdout.on('end', _.bind(function() {
+        var buffer = new Buffer(imageLength);
+
+        for (var i = 0, len = image.length, pos = 0; i < len; i++) {
+          image[i].copy(buffer, pos);
+          pos += image[i].length;
+        }
+
         doc._attachments[this.config.folder + '/' + name] = {
           content_type: 'image/jpeg',
-          data: data.toString('base64')
+          data: buffer.toString('base64')
         };
-
-        next();
       }, this));
 
       convert.on('exit', _.bind(function(code) {
         if (code !== 0) {
           console.warn("error in `convert`")
           this._log(doc, 'error ' + name);
-          return;
+        } else {
+          this._log(doc, 'done ' + name);
         }
-
-        this._log(doc, 'done ' + name);
+        
+        next(code);
       }, this));
 
       // request image and send it to imagemagick
