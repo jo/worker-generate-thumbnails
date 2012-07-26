@@ -14,15 +14,12 @@ var processor = (function() {
       return formats.indexOf(name.toLowerCase().replace(/^.*\.([^\.]+)$/, '$1')) > -1;
     },
     process: function(doc, name, next) {
-      var args = ['-', '-thumbnail', this.config.size, '-'],
+      var args = [this._urlFor(doc, name), '-thumbnail', this.config.size, '-'],
           convert = spawn('convert', args),
           image = [],
           imageLength = 0;
 
       this._log(doc, 'convert ' + name);
-
-      // print errors
-      convert.stderr.pipe(process.stderr);
 
       convert.stdout.on('data', function(data) {
         image.push(data);
@@ -53,9 +50,6 @@ var processor = (function() {
         
         next(code);
       }, this));
-
-      // request image and send it to imagemagick
-      request(this._urlFor(doc, name)).pipe(convert.stdin);
     }
   };
 })();
