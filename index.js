@@ -7,7 +7,7 @@ var processor = (function() {
   var formats = ['jpg', 'png', 'gif', 'tiff', 'bmp'],
       spawn = require('child_process').spawn;
 
-  function resize(doc, name, url, version, options, cb) {
+  function process(doc, name, url, version, options, cb) {
     // let convert do the request
     var args = [url, '-thumbnail', options.size, '-'],
         convert = spawn('convert', args),
@@ -49,8 +49,8 @@ var processor = (function() {
 
       for (version in this.config.versions) {
         this._log(doc, 'render ' + version + '/' + name);
-        resize(doc, name, this._urlFor(doc, name), version, this.config.versions[version], (function(error) {
-          if (error !== 0) {
+        process(doc, name, this._urlFor(doc, name), version, this.config.versions[version], (function(code) {
+          if (code !== 0) {
             console.warn("error in `convert`")
             this._log(doc, 'error ' + version + '/' + name);
           } else {
