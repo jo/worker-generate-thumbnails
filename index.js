@@ -7,50 +7,59 @@ var processor = (function() {
   var formats = ['jpg', 'png', 'gif', 'tiff', 'bmp'],
       spawn = require('child_process').spawn;
 
+  function resize(doc, name, url, version, options, cb) {
+    // let convert do the request
+    var args = [url, '-thumbnail', options.size, '-'],
+        convert = spawn('convert', args),
+        image = [],
+        imageLength = 0;
+
+    // collect thumbnail binary
+    convert.stdout.on('data', function(data) {
+      image.push(data);
+      imageLength += data.length;
+    });
+
+    convert.stdout.on('end', function() {
+      var buffer = new Buffer(imageLength);
+
+      for (var i = 0, len = image.length, pos = 0; i < len; i++) {
+        image[i].copy(buffer, pos);
+        pos += image[i].length;
+      }
+
+      // write attachment object
+      doc._attachments[version + '/' + name] = {
+        content_type: 'image/jpeg',
+        data: buffer.toString('base64')
+      };
+    });
+
+    // continue on exit
+    convert.on('exit', cb);
+  }
+
   return {
     check: function(doc, name) {
       return formats.indexOf(name.toLowerCase().replace(/^.*\.([^\.]+)$/, '$1')) > -1;
     },
     process: function(doc, name, next) {
-      // let convert do the request
-      var args = [this._urlFor(doc, name), '-thumbnail', this.config.size, '-'],
-          convert = spawn('convert', args),
-          image = [],
-          imageLength = 0;
+      var cnt = 0;
+      for (version in this.config.versions) cnt++;
 
-      this._log(doc, 'convert ' + name);
-
-      // collect thumbnail binary
-      convert.stdout.on('data', function(data) {
-        image.push(data);
-        imageLength += data.length;
-      });
-
-      convert.stdout.on('end', (function() {
-        var buffer = new Buffer(imageLength);
-
-        for (var i = 0, len = image.length, pos = 0; i < len; i++) {
-          image[i].copy(buffer, pos);
-          pos += image[i].length;
-        }
-
-        // write attachment object
-        doc._attachments[this.config.folder + '/' + name] = {
-          content_type: 'image/jpeg',
-          data: buffer.toString('base64')
-        };
-      }).bind(this));
-
-      convert.on('exit', (function(code) {
-        if (code !== 0) {
-          console.warn("error in `convert`")
-          this._log(doc, 'error ' + name);
-        } else {
-          this._log(doc, 'done ' + name);
-        }
-        
-        next(code);
-      }).bind(this));
+      for (version in this.config.versions) {
+        this._log(doc, 'render ' + version + '/' + name);
+        resize(doc, name, this._urlFor(doc, name), version, this.config.versions[version], (function(error) {
+          if (error !== 0) {
+            console.warn("error in `convert`")
+            this._log(doc, 'error ' + version + '/' + name);
+          } else {
+            this._log(doc, 'done ' + version + '/' + name);
+          }
+          cnt--;
+          if (cnt === 0) next(null);
+        }).bind(this));
+      }
     }
   };
 })();
@@ -61,8 +70,11 @@ var config = {
   config_id: 'worker-config/generate-thumbnails',
   processor: processor,
   defaults: {
-    folder: 'thumbnails',
-    size: '200x300'
+    versions: {
+      thumbnails: {
+        size: '200x300'
+      }
+    }
   }
 };
 
