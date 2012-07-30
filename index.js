@@ -1,13 +1,12 @@
 // Worker Attachments
 var request = require("request");
 
-var WorkerAttachments = require("worker-attachments/lib/WorkerAttachments");
+var WorkerAttachments = require("worker-attachments");
 
 // example mimimal worker that checks every jpg or png image
 var processor = (function() {
   var formats = ['jpg', 'png'],
-      spawn = require('child_process').spawn,
-      _ = require("underscore");
+      spawn = require('child_process').spawn;
 
   return {
     check: function(doc, name) {
@@ -26,7 +25,7 @@ var processor = (function() {
         imageLength += data.length;
       });
 
-      convert.stdout.on('end', _.bind(function() {
+      convert.stdout.on('end', (function() {
         var buffer = new Buffer(imageLength);
 
         for (var i = 0, len = image.length, pos = 0; i < len; i++) {
@@ -38,9 +37,9 @@ var processor = (function() {
           content_type: 'image/jpeg',
           data: buffer.toString('base64')
         };
-      }, this));
+      }).bind(this));
 
-      convert.on('exit', _.bind(function(code) {
+      convert.on('exit', (function(code) {
         if (code !== 0) {
           console.warn("error in `convert`")
           this._log(doc, 'error ' + name);
@@ -49,7 +48,7 @@ var processor = (function() {
         }
         
         next(code);
-      }, this));
+      }).bind(this));
     }
   };
 })();
