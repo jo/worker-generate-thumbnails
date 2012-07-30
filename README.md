@@ -4,6 +4,13 @@ This worker generates thumbnails from images
 for all image types supported by imagemagick.
 
 
+## installation
+
+    git clone git://github.com/null2/worker-generate-thumbnails.git
+    cd worker-generate-thumbnails
+    npm install
+
+
 ## Configuration
 
 Configuration is done in a worker configuration document inside the target database.
@@ -14,10 +21,12 @@ A Worker Configuration File might look like this:
     {
       "_id": "worker-config/generate-thumbnails",
       "_rev": "9-a653b27246b01cf9204fa9f5dee7cc64",
+      "last_update_seq": 103,
       "size": "135x135"
     }
 
 You can update the config live so that all future processings will take the new configuration.
+The worker stores its last update seq here and can resume at the point it stopped.
 
 _size_ is a expression for imagemagick, so you can do eg. 120x120!, 120x and so on.
 
@@ -49,12 +58,6 @@ The worker status is also per attachment to process only attachments which had c
 
 
 ## Running the Worker
-
-Make shure you did
-
-    git submodule init
-    git submodule update
-
 
 To start, this needs either the following environment variables set:
 
