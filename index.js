@@ -1,11 +1,10 @@
-// Worker Attachments
-var request = require("request");
+// Worker Generate Thumbnails
 
+var request = require("request");
 var WorkerAttachments = require("worker-attachments");
 
-// example mimimal worker that checks every jpg or png image
 var processor = (function() {
-  var formats = ['jpg', 'png'],
+  var formats = ['jpg', 'png', 'gif', 'tiff', 'bmp'],
       spawn = require('child_process').spawn;
 
   return {
@@ -13,6 +12,7 @@ var processor = (function() {
       return formats.indexOf(name.toLowerCase().replace(/^.*\.([^\.]+)$/, '$1')) > -1;
     },
     process: function(doc, name, next) {
+      // let convert do the request
       var args = [this._urlFor(doc, name), '-thumbnail', this.config.size, '-'],
           convert = spawn('convert', args),
           image = [],
@@ -20,6 +20,7 @@ var processor = (function() {
 
       this._log(doc, 'convert ' + name);
 
+      // collect thumbnail binary
       convert.stdout.on('data', function(data) {
         image.push(data);
         imageLength += data.length;
@@ -33,6 +34,7 @@ var processor = (function() {
           pos += image[i].length;
         }
 
+        // write attachment object
         doc._attachments[this.config.folder + '/' + name] = {
           content_type: 'image/jpeg',
           data: buffer.toString('base64')
