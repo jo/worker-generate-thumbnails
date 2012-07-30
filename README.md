@@ -28,9 +28,6 @@ A Worker Configuration File might look like this:
       "versions": {
         "thumbnail": {
           "size": "135x135"
-        },
-        "medium": {
-          "size": "800x600"
         }
       }
     }
