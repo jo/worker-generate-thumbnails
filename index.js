@@ -37,7 +37,7 @@ var processor = (function() {
 
     // print errors
     convert.stderr.on('data', function(data) {
-      console.error(data);
+      console.error(data.toString());
     });
 
     // continue on exit
