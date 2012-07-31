@@ -9,7 +9,7 @@ var processor = (function() {
 
   function process(doc, name, url, version, options, cb) {
     // let convert do the request
-    var args = [url, '-thumbnail', options.size, '-'],
+    var args = ['-', '-thumbnail', options.size, '-'],
         convert = spawn('convert', args),
         image = [],
         imageLength = 0;
@@ -42,6 +42,9 @@ var processor = (function() {
 
     // continue on exit
     convert.on('exit', cb);
+
+    // request image and send it to imagemagick
+    request(url).pipe(convert.stdin);
   }
 
   return {
