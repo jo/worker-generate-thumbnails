@@ -35,6 +35,11 @@ var processor = (function() {
       };
     });
 
+    // print errors
+    convert.stderr.on('data', function(data) {
+      console.error(data);
+    });
+
     // continue on exit
     convert.on('exit', cb);
   }
