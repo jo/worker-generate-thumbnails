@@ -1,7 +1,7 @@
 # Worker Generate Thumbnails
 
 This worker generates thumbnails from images
-for all image types supported by imagemagick.
+for image types supported by imagemagick.
 
 
 ## Prerequisites
@@ -63,7 +63,7 @@ The status object of the worker looks like this:
 
     "worker_status": {
       "generate-thumbnails": {
-        "myfile": {
+        "myfile.png": {
           "status": "completed",
           "revpos": 160
         }
@@ -79,15 +79,9 @@ The worker status is also per attachment to process only attachments which had c
 
 ## Running the Worker
 
-To start, this needs either the following environment variables set:
+To start, this needs the following environment variables set:
 
-    export HOODIE_SERVER=http://example.org
-    npm start
-
-
-or pass them to the commandline:
-
-    HOODIE_SERVER=http://example.org npm start
+    COUCH_SERVER=http://example.org COUCH_DB=mydb npm start
 
 
 ## License & Copyright
