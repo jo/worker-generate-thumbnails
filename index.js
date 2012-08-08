@@ -49,7 +49,7 @@ function resize(doc, name, version, options, done) {
 var formats = ['jpg', 'png', 'gif', 'tiff', 'bmp'];
 var config = {
   name: 'generate-thumbnails',
-  server: process.env.COUCHDB_SERVER || "http://127.0.0.1:5984",
+  server: process.env.COUCH_SERVER || "http://127.0.0.1:5984",
   defaults: {
     versions: {
       thumbnails: {
