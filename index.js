@@ -49,7 +49,7 @@ function resize(doc, name, version, options, done) {
   request(url).pipe(convert.stdin);
 }
 
-var formats = ['jpg', 'png', 'gif', 'tiff', 'bmp'];
+var formats = ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'bmp'];
 var config = {
   name: 'generate-thumbnails',
   server: process.env.COUCH_SERVER || "http://127.0.0.1:5984",
