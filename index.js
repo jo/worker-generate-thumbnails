@@ -14,10 +14,13 @@ function resize(doc, name, version, options, done) {
         + '/' + encodeURIComponent(this.db)
         + '/' + encodeURIComponent(doc._id)
         + '/' + encodeURIComponent(name),
-      prefix = '/tmp/' + doc._id + '-' + version  + '-' + name.replace(/\..*$/, '') + '-',
+      basename = name.replace(/\..*$/, ''),
+      prefix = '/tmp/' + doc._id + '-' + version  + '-' + basename.replace('/', '-') + '-',
       suffix = '.jpg',
       args = ['-', '-thumbnail', options.size, '-colorspace', 'sRGB', prefix + '%04d' + suffix],
       convert = spawn('convert', args);
+
+  convert.stderr.pipe(process.stderr);
 
   convert.on('exit', (function(code) {
     var i = 0,  // convert starts with 0
@@ -31,7 +34,7 @@ function resize(doc, name, version, options, done) {
     while (path.existsSync(prefix + String('0000' + i).slice(-4) + suffix)) {
       filename = prefix + String('0000' + i).slice(-4) + suffix;
 
-      attachments[version + '/' + path.basename(filename).replace(doc._id + '-' + version  + '-' , '')] = {
+      attachments[version + '/' + basename + String('0000' + i).slice(-4) + suffix] = {
         content_type: 'image/jpeg',
         data: fs.readFileSync(filename).toString('base64')
       };
@@ -46,7 +49,7 @@ function resize(doc, name, version, options, done) {
   request(url).pipe(convert.stdin);
 }
 
-var formats = ['jpg', 'png', 'gif', 'tiff', 'bmp'];
+var formats = ['jpg', 'jpeg', 'png', 'gif', 'tif', 'tiff', 'bmp', 'svg'];
 var config = {
   name: 'generate-thumbnails',
   server: process.env.COUCH_SERVER || "http://127.0.0.1:5984",
