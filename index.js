@@ -16,7 +16,7 @@ function resize(doc, name, version, options, done) {
         + '/' + encodeURIComponent(name),
       prefix = '/tmp/' + doc._id + '-' + version  + '-' + name.replace(/\..*$/, '') + '-',
       suffix = '.jpg',
-      args = ['-', '-thumbnail', options.size, prefix + '%04d' + suffix],
+      args = ['-', '-thumbnail', options.size, '-colorspace', 'sRGB', prefix + '%04d' + suffix],
       convert = spawn('convert', args);
 
   convert.on('exit', (function(code) {
