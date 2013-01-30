@@ -1,6 +1,6 @@
 {
   "name": "worker-generate-thumbnails",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "CouchDB Worker which generates image thumbnails.",
   "keywords": ["CouchDB", "attchments", "worker", "convert", "imagemagick", "image", "thumbnail"],
   "homepage": "https://github.com/null2/worker-generate-thumbnails",
