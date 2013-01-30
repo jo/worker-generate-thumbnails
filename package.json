@@ -1,12 +1,25 @@
 {
   "name": "worker-generate-thumbnails",
+  "version": "0.4.5",
   "description": "CouchDB Worker which generates image thumbnails.",
+  "keywords": ["CouchDB", "attchments", "worker", "convert", "imagemagick", "image", "thumbnail"],
+  "homepage": "https://github.com/null2/worker-generate-thumbnails",
+  "bugs": {
+    "url" : "http://github.com/null2/worker-generate-thumbnails/issues",
+    "email" : "schmidt@netzmerk.com"
+  },
   "author": {
     "name": "Johannes J. Schmidt",
-    "url": "http://github.com/jo",
-    "email": "schmidt@netzmerk.com"
+    "email": "schmidt@netzmerk.com",
+    "url": "http://die-tf.de"
   },
-  "version": "0.4.5",
+  "contributors": [
+    "Matthias Geisler <matthias@semanticdreamer.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/null2/worker-generate-thumbnails"
+  },
   "dependencies": {
     "request": "*",
     "underscore": "*",
