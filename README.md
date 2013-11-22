@@ -1,3 +1,7 @@
+# Depricated!
+
+Please use https://github.com/jo/worker-generate-thumbnails
+
 # Worker Generate Thumbnails
 
 This worker generates thumbnails from images
