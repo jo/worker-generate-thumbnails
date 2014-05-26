@@ -5,7 +5,7 @@ for image types supported by imagemagick.
 
 # Depricated!
 
-Please use https://github.com/jo/couchmagick
+Please use [Couchmagick](https://github.com/jo/couchmagick)
 
 
 ## Prerequisites
