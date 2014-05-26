@@ -1,11 +1,11 @@
-# Depricated!
-
-Please use https://github.com/jo/worker-generate-thumbnails
-
 # Worker Generate Thumbnails
 
 This worker generates thumbnails from images
 for image types supported by imagemagick.
+
+# Depricated!
+
+Please use https://github.com/jo/couchmagick
 
 
 ## Prerequisites
